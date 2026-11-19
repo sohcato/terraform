@@ -1,0 +1,15 @@
+# Local working directories used by Terraform
+.terraform/
+.terarform.*
+
+# Lock files containing provider hashes 
+.terraform.lock.hcl
+
+# Secret variable files containg API tokens or passwords
+# Ideally we'll be using environment variables, though
+*.tfvars
+*.tfvars.json
+*secret*.tf
+
+*.swp
+*.tfplan
