@@ -1,0 +1,61 @@
+name: Apply
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TF_IN_AUTOMATION: "1"
+  TF_INPUT: "0"
+  TF_VAR_proxmox_api_token: ${{ secrets.PROXMOX_API_TOKEN }}
+  TF_VAR_proxmox_ssh_private_key: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY }}
+  PG_CONN_STR: ${{ secrets.PG_CONN_STR }}
+
+jobs:
+  apply:
+    runs-on: operator-ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: stacks/prod/proxmox
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.16.6
+          terraform_wrapper: false
+
+      - name: Init
+        run: terraform init
+
+      - name: Plan
+        run: terraform plan -lock-timeout=10m -out=tfplan
+
+      - name: Apply
+        run: terraform apply -lock-timeout=10m tfplan
+
+      - name: Wait for new VMs to report an IP
+        run: |
+          CREATED=$(terraform show -json tfplan \
+            | jq '[.resource_changes[]? | select(.type == "proxmox_virtual_environment_vm" and (.change.actions | index("create")))] | length')
+          if [ "$CREATED" -gt 0 ]; then
+            sleep 120
+            terraform apply -refresh-only -auto-approve -lock-timeout=10m > /dev/null
+          fi
+
+      - name: VM and CT addresses
+        run: |
+          printf 'ID\tNAME\tNODE\tIP\tMAC\n'
+          terraform show -json | jq -r '
+            [.values.root_module | .. | objects | select(has("resources")) | .resources[]]
+            | map(select(.type == "proxmox_virtual_environment_vm" or .type == "proxmox_virtual_environment_container"))
+            | sort_by(.values.vm_id)
+            | .[]
+            | .values as $v
+            | if .type == "proxmox_virtual_environment_vm"
+              then [$v.vm_id, $v.name, $v.node_name, ([$v.ipv4_addresses[]?[]? | select(. != "127.0.0.1")] | first // "pending"), ($v.network_device[0].mac_address // "-")]
+              else [$v.vm_id, $v.initialization[0].hostname, $v.node_name, $v.initialization[0].ip_config[0].ipv4[0].address, ($v.network_interface[0].mac_address // "-")]
+              end
+            | @tsv'
