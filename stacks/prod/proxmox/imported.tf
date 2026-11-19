@@ -587,11 +587,10 @@ resource "proxmox_virtual_environment_vm" "exmachina" {
     type              = "4m"
   }
   initialization {
-    datastore_id        = "local"
-    file_format         = "qcow2"
-    interface           = "ide2"
-    upgrade             = true
-    vendor_data_file_id = proxmox_virtual_environment_file.autoinstall_config.id
+    datastore_id = "local"
+    file_format  = "qcow2"
+    interface    = "ide2"
+    upgrade      = true
     ip_config {
       ipv4 {
         address = "dhcp"
