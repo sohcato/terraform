@@ -146,3 +146,9 @@ variable "operating_system_template_file_id" {
   type    = string
   default = "iso:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
 }
+
+variable "ssh_keys" {
+  type     = list(string)
+  default  = []
+  nullable = false
+}

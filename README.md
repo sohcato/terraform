@@ -33,7 +33,7 @@ module "myvm" {
 }
 ```
 
-Put your public SSH key in `ssh_keys` (`cat ~/.ssh/id_ed25519.pub`). You can list more than one. Keys are only added when the VM is first created.
+Put your public SSH key in `ssh_keys` (`cat ~/.ssh/id_ed25519.pub`). You can list more than one. Keys are only added when the host is first created.
 
 **CT** (Debian 12, 1 core, 1 GB RAM, 64 GB disk), using the IP from step 2:
 
@@ -46,6 +46,7 @@ module "myct" {
   proxmox_node_name = "chong"
   ip_address        = "192.168.30.XX/24"
   ip_gateway        = "192.168.30.1"
+  ssh_keys          = ["ssh-ed25519 AAAA... you@hostname"]
 }
 ```
 
@@ -89,4 +90,4 @@ terraform init
 terraform state pull | jq -r '.resources[] | select(.module == "module.myvm" and .type == "random_password") | .instances[0].attributes.result'
 ```
 
-**CT:** on the Proxmox node it runs on, run `pct enter <id>` (the ID is in the Apply output).
+**CT:** SSH in with your key as root: `ssh root@<ip>`. Without a key, run `pct enter <id>` on the Proxmox node it runs on (the ID is in the Apply output).

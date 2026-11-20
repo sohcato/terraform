@@ -41,6 +41,13 @@ resource "proxmox_virtual_environment_container" "this" {
         gateway = var.ip_gateway
       }
     }
+
+    dynamic "user_account" {
+      for_each = length(var.ssh_keys) > 0 ? [1] : []
+      content {
+        keys = var.ssh_keys
+      }
+    }
   }
 
   memory {
@@ -66,7 +73,8 @@ resource "proxmox_virtual_environment_container" "this" {
     prevent_destroy = true
     ignore_changes = [
       disk[0].datastore_id,
-      operating_system
+      operating_system,
+      initialization[0].user_account
     ]
   }
 }
