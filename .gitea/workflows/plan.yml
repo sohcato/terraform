@@ -23,13 +23,30 @@ jobs:
         working-directory: stacks/prod/proxmox
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Terraform changes
+        id: changes
+        working-directory: .
+        env:
+          BASE: ${{ gitea.event.pull_request.base.sha }}
+        run: |
+          if git diff --quiet "$BASE"...HEAD -- modules stacks .gitea/workflows; then
+            echo "terraform=false" >> "$GITHUB_OUTPUT"
+            echo "No Terraform changes in this pull request, skipping the plan."
+          else
+            echo "terraform=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: hashicorp/setup-terraform@v3
+        if: steps.changes.outputs.terraform == 'true'
         with:
           terraform_version: 1.16.6
           terraform_wrapper: false
 
       - name: Check formatting
+        if: steps.changes.outputs.terraform == 'true'
         working-directory: .
         run: |
           if ! terraform fmt -check -recursive -diff; then
@@ -38,15 +55,19 @@ jobs:
           fi
 
       - name: Init
+        if: steps.changes.outputs.terraform == 'true'
         run: terraform init
 
       - name: Validate
+        if: steps.changes.outputs.terraform == 'true'
         run: terraform validate
 
       - name: Plan
+        if: steps.changes.outputs.terraform == 'true'
         run: terraform plan -no-color -lock=false -out=tfplan | tee plan.txt
 
       - name: Comment plan on pull request
+        if: steps.changes.outputs.terraform == 'true'
         continue-on-error: true
         env:
           TOKEN: ${{ gitea.token }}

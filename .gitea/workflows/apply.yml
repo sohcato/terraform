@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - modules/**
+      - stacks/**
+      - .gitea/workflows/**
 
 env:
   TF_IN_AUTOMATION: "1"
