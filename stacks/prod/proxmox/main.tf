@@ -1,3 +1,23 @@
+########## EXAMPLES ##########
+
+# module "myvm" {
+#   source = "../../../modules/proxmox-vm"
+#
+#   vm_name           = "myvm"
+#   proxmox_node_name = "parker"
+#   ssh_keys          = ["ssh-ed25519 AAAA... you@hostname"]
+# }
+
+# module "myct" {
+#   source = "../../../modules/proxmox-ct"
+#
+#   description       = "myct"
+#   ct_hostname       = "myct"
+#   proxmox_node_name = "chong"
+#   ip_address        = "192.168.30.XX/24"
+#   ip_gateway        = "192.168.30.1"
+# }
+
 ########## PARKER ##########
 
 module "knower" {
