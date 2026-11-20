@@ -112,6 +112,13 @@ variable "vendor_data_file_id" {
   type    = string
   default = "iso:snippets/autoinstall_config.yaml"
 }
+
+variable "ssh_keys" {
+  type     = list(string)
+  default  = []
+  nullable = false
+}
+
 # variable "proxmox_api_token" {
 # 	description 	= "The API token for Proxmox authentication"
 # 	type			= string

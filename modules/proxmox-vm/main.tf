@@ -94,6 +94,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     user_account {
       username = var.vm_name
       password = random_password.vm_initial_password.result
+      keys     = var.ssh_keys
     }
 
     vendor_data_file_id = var.vendor_data_file_id

@@ -29,8 +29,11 @@ module "myvm" {
 
   vm_name           = "myvm"
   proxmox_node_name = "parker"
+  ssh_keys          = ["ssh-ed25519 AAAA... you@hostname"]
 }
 ```
+
+Put your public SSH key in `ssh_keys` (`cat ~/.ssh/id_ed25519.pub`). You can list more than one. Keys are only added when the VM is first created.
 
 **CT** (Debian 12, 1 core, 1 GB RAM, 64 GB disk), using the IP from step 2:
 
@@ -78,6 +81,6 @@ For a VM, reboot it afterwards so it picks up the IP.
 
 ## 7. Log in
 
-**VM:** SSH in as the user named after the VM (`myvm@<ip>`). Ask an admin for the initial password, then change it with `passwd`.
+**VM:** SSH in with your key as the user named after the VM: `ssh myvm@<ip>`. If you didn't add a key, ask an admin for the initial password.
 
 **CT:** on the Proxmox node it runs on, run `pct enter <id>` (the ID is in the Apply output).
