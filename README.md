@@ -8,7 +8,7 @@ How to create a new VM or container (CT) on Proxmox. Don't create hosts through 
 git clone https://git.1337.berkeley.edu/Committee/terraform
 cd terraform
 git config core.hooksPath .githooks
-git switch -c add-<name>
+git switch -c add/<name>
 ```
 
 The `git config` line turns on a hook that formats your Terraform files every time you commit. You only need to run it once per clone.
@@ -64,7 +64,7 @@ All settings are listed in `modules/proxmox-vm/variables.tf` and `modules/proxmo
 ```
 git add stacks/prod/proxmox/main.tf
 git commit -m "add <name>"
-git push -u origin add-<name>
+git push -u origin add/<name>
 ```
 
 Open a pull request on Gitea. Check the plan in the **Actions** tab or in the comment on your pull request. It should say **`2 to add, 0 to change, 0 to destroy`** for a VM (the VM and its password) or **`1 to add, 0 to change, 0 to destroy`** for a CT. If it says anything else, fix that before asking for a review.
