@@ -67,7 +67,7 @@ git commit -m "add <name>"
 git push -u origin add-<name>
 ```
 
-Open a pull request on Gitea. Check the plan in the **Actions** tab or in the comment on your pull request. It should say **`1 to add, 0 to change, 0 to destroy`**. If it says anything else, fix that before asking for a review.
+Open a pull request on Gitea. Check the plan in the **Actions** tab or in the comment on your pull request. It should say **`2 to add, 0 to change, 0 to destroy`** for a VM (the VM and its password) or **`1 to add, 0 to change, 0 to destroy`** for a CT. If it says anything else, fix that before asking for a review.
 
 ## 5. Get it approved and merged
 
@@ -81,6 +81,12 @@ For a VM, reboot it afterwards so it picks up the IP.
 
 ## 7. Log in
 
-**VM:** SSH in with your key as the user named after the VM: `ssh myvm@<ip>`. If you didn't add a key, ask an admin for the initial password.
+**VM:** SSH in with your key as the user named after the VM: `ssh myvm@<ip>`. If you didn't add a key, ask a Management user for the initial password. Management users can read it on Reeves:
+
+```
+cd terraform/stacks/prod/proxmox
+terraform init
+terraform state pull | jq -r '.resources[] | select(.module == "module.myvm" and .type == "random_password") | .instances[0].attributes.result'
+```
 
 **CT:** on the Proxmox node it runs on, run `pct enter <id>` (the ID is in the Apply output).
