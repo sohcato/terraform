@@ -14,6 +14,7 @@ module "knower" {
 
   cores       = 4
   ram_size_mb = 8192
+  disk_size   = 64
 }
 
 module "operator" {
