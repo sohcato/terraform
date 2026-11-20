@@ -63,6 +63,14 @@ module "operator" {
   is_keyctl = true
 }
 
+module "tester" {
+  source = "../../../modules/proxmox-vm"
+
+  vm_name           = "tester"
+  proxmox_node_name = "parker"
+  ssh_keys          = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII7MXnipzX9/WoaV67dU0xPzt+Vzb4kNOREUuKxrpXBV"]
+}
+
 ########## CHONG ##########
 
 module "constructor" {
