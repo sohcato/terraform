@@ -7,8 +7,11 @@ How to create a new VM or container (CT) on Proxmox. Don't create hosts through 
 ```
 git clone https://git.1337.berkeley.edu/Committee/terraform
 cd terraform
+git config core.hooksPath .githooks
 git switch -c add-<name>
 ```
+
+The `git config` line turns on a hook that formats your Terraform files every time you commit. You only need to run it once per clone.
 
 ## 2. Pick an IP address
 
@@ -54,14 +57,6 @@ To change the defaults, add settings to your block, for example:
 All settings are listed in `modules/proxmox-vm/variables.tf` and `modules/proxmox-ct/variables.tf`.
 
 ## 4. Push and open a pull request
-
-If you have Terraform installed (it is on Reeves), run this from the repo root first:
-
-```
-terraform fmt -recursive
-```
-
-Then:
 
 ```
 git add stacks/prod/proxmox/main.tf

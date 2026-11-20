@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v terraform >/dev/null 2>&1; then
+  echo "pre-commit: terraform is not installed, skipping terraform fmt" >&2
+  exit 0
+fi
+
+mapfile -t staged < <(git diff --cached --name-only --diff-filter=ACMR -- '*.tf' '*.tfvars')
+[ "${#staged[@]}" -eq 0 ] && exit 0
+
+mapfile -t partial < <(git diff --name-only -- "${staged[@]}")
+if [ "${#partial[@]}" -gt 0 ] && ! terraform fmt -check -- "${partial[@]}" >/dev/null; then
+  echo "pre-commit: these files need formatting but also have unstaged changes:" >&2
+  printf '  %s\n' "${partial[@]}" >&2
+  echo "Stage or stash the rest of your changes, then commit again." >&2
+  exit 1
+fi
+
+terraform fmt -- "${staged[@]}"
+git add -- "${staged[@]}"
