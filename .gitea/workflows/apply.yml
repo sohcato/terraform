@@ -40,10 +40,10 @@ jobs:
       - name: Apply
         run: terraform apply -lock-timeout=10m tfplan
 
-      - name: Wait for new VMs to report an IP
+      - name: Wait for new hosts to report an IP
         run: |
           CREATED=$(terraform show -json tfplan \
-            | jq '[.resource_changes[]? | select(.type == "proxmox_virtual_environment_vm" and (.change.actions | index("create")))] | length')
+            | jq '[.resource_changes[]? | select((.type == "proxmox_virtual_environment_vm" or .type == "proxmox_virtual_environment_container") and (.change.actions | index("create")))] | length')
           if [ "$CREATED" -gt 0 ]; then
             sleep 120
             terraform apply -refresh-only -auto-approve -lock-timeout=10m > /dev/null
@@ -60,6 +60,6 @@ jobs:
             | .values as $v
             | if .type == "proxmox_virtual_environment_vm"
               then [$v.vm_id, $v.name, $v.node_name, ([$v.ipv4_addresses[]?[]? | select(. != "127.0.0.1")] | first // "pending"), ($v.network_device[0].mac_address // "-")]
-              else [$v.vm_id, $v.initialization[0].hostname, $v.node_name, $v.initialization[0].ip_config[0].ipv4[0].address, ($v.network_interface[0].mac_address // "-")]
+              else [$v.vm_id, $v.initialization[0].hostname, $v.node_name, ([($v.ipv4 // {})[] | select(. != "127.0.0.1")] | first // ($v.initialization[0].ip_config[0].ipv4[0].address | if . == "dhcp" then "pending" else . end)), ($v.network_interface[0].mac_address // "-")]
               end
             | @tsv'

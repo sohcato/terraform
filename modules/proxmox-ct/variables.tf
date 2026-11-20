@@ -90,11 +90,13 @@ variable "servers" {
 }
 
 variable "ip_address" {
-  type = string
+  type    = string
+  default = "dhcp"
 }
 
 variable "ip_gateway" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "dedicated_memory" {
