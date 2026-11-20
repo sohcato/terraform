@@ -400,7 +400,7 @@ resource "proxmox_virtual_environment_vm" "phonebox" {
   kvm_arguments                        = null
   mac_addresses                        = ["00:00:00:00:00:00", "BC:24:11:6C:F1:14"]
   machine                              = "pc"
-  migrate                              = false
+  migrate                              = true
   name                                 = "phonebox"
   network_device = [{
     bridge       = "vmbr30"
@@ -508,7 +508,7 @@ resource "proxmox_virtual_environment_vm" "exmachina" {
   kvm_arguments                        = null
   mac_addresses                        = ["00:00:00:00:00:00", "BC:24:11:58:D1:4C"]
   machine                              = "pc"
-  migrate                              = false
+  migrate                              = true
   name                                 = "exmachina"
   network_device = [{
     bridge       = "vmbr30"
@@ -633,7 +633,7 @@ resource "proxmox_virtual_environment_vm" "keymaker" {
   kvm_arguments                        = null
   mac_addresses                        = ["00:00:00:00:00:00", "BC:24:11:9C:69:09"]
   machine                              = "pc"
-  migrate                              = false
+  migrate                              = true
   name                                 = "keymaker"
   network_device = [{
     bridge       = "vmbr30"
@@ -839,7 +839,7 @@ resource "proxmox_virtual_environment_vm" "deus" {
   kvm_arguments                        = null
   mac_addresses                        = ["00:00:00:00:00:00", "BC:24:11:B7:9C:42"]
   machine                              = "pc"
-  migrate                              = false
+  migrate                              = true
   name                                 = "deus"
   network_device = [{
     bridge       = "vmbr30"

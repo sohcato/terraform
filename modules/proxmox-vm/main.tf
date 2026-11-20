@@ -1,6 +1,7 @@
 resource "proxmox_virtual_environment_vm" "this" {
   name                = var.vm_name
   node_name           = var.proxmox_node_name
+  migrate             = true
   vm_id               = var.vm_id
   bios                = var.bios
   reboot_after_update = var.reboot_after_update
