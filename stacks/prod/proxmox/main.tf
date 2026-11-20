@@ -14,8 +14,7 @@
 #   description       = "myct"
 #   ct_hostname       = "myct"
 #   proxmox_node_name = "chong"
-#   ip_address        = "192.168.30.XX/24"
-#   ip_gateway        = "192.168.30.1"
+#   ssh_keys          = ["ssh-ed25519 AAAA... you@hostname"]
 # }
 
 ########## PARKER ##########
