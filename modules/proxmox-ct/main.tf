@@ -65,7 +65,7 @@ resource "proxmox_virtual_environment_container" "this" {
   lifecycle {
     prevent_destroy = true
     ignore_changes = [
-      disk,
+      disk[0].datastore_id,
       operating_system
     ]
   }

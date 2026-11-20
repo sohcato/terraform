@@ -12,7 +12,9 @@ resource "proxmox_virtual_environment_vm" "this" {
 
     # Ignore the following changes:
     ignore_changes = [
-      disk
+      disk[0].import_from,
+      disk[0].datastore_id,
+      initialization
     ]
 
   }
